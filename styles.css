@@ -1,0 +1,365 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.app-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px;
+  background-color: #1e1e2f;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: -250px;
+  height: 100%;
+  padding-top: 60px;
+  transition: left 0.3s ease;
+  z-index: 2;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.sidebar li:hover {
+  background-color: #292945;
+  cursor: pointer;
+}
+
+.sidebar a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.sidebar a img {
+  width: 20px;
+  height: 20px;
+  opacity: 0.8;
+  transition: transform 0.2s ease;
+}
+
+.sidebar a:hover img {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Overlay when sidebar is active */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.sidebar.active ~ .overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Main content styling */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #00cfff;
+  padding: 10px;
+}
+
+.left-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.right-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.menu {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.bot-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid black;
+  padding: 0;
+}
+
+.user-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Chat area */
+.chat-area {
+  flex: 1;
+  background-color: #ddd;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.event-header {
+  background-color: #eee;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.event-header h2 {
+  color: #00cfff;
+  margin: 0;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.event-header h2 .event-header-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.calendar-button {
+  background-color: #00cfff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.calendar-button:hover {
+  background-color: #00b8e6;
+}
+
+.event-table {
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.event-table th {
+  background-color: #00cfff;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.event-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.event-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Extra Calendar Styles */
+.calendar-year {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.month {
+  background: white;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  width: 300px;
+  text-align: center;
+}
+
+.month h3 {
+  margin-bottom: 10px;
+  font-size: 22px;
+  color: black;
+}
+
+.day-names,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.day-names div {
+  font-weight: bold;
+  color: #00cfff;
+}
+
+.days div {
+  background: #eee;
+  padding: 10px 0;
+  border-radius: 6px;
+}
+
+.days div.event {
+  background: #ffc107;
+  color: black;
+  font-weight: bold;
+}
+
+/* Login Popup */
+.login-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  color: #00cfff;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background-color: #00cfff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-box .error {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.help-text {
+  font-size: 14px;
+  color: #666;
+  margin-top: 15px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header .title {
+    font-size: 20px;
+  }
+
+  .sidebar ul li a {
+    font-size: 16px;
+  }
+
+  .chat-area {
+    padding: 10px;
+  }
+}
+
+/* Footer */
+.footer {
+  background-color: #bbb;
+  padding: 10px;
+}
+
+.footer input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
