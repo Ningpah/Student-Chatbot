@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['matricule']) && isset
 
     <!-- Footer -->
     <footer class="footer">
-      <input type="text" id="chatInput" placeholder="Type a message and press Enter..." />
+      <input type="text" id="chatInput" placeholder="Type your question..." />
     </footer>
   </div>
 </div>
@@ -127,24 +127,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['matricule']) && isset
     const chatInput = document.getElementById('chatInput');
     const chatArea = document.getElementById('chatArea');
 
+    function appendMessage(text, isUser) {
+      const message = document.createElement('div');
+      message.textContent = text;
+      message.style.padding = '10px';
+      message.style.margin = '5px';
+      message.style.borderRadius = '10px';
+      message.style.maxWidth = '70%';
+      message.style.display = 'inline-block';
+      message.style.clear = 'both';
+
+      if (isUser) {
+        message.style.backgroundColor = '#00cfff';
+        message.style.color = 'white';
+        message.style.float = 'right';
+      } else {
+        message.style.backgroundColor = '#f1f1f1';
+        message.style.color = 'black';
+        message.style.float = 'left';
+      }
+
+      chatArea.appendChild(message);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
     if (chatInput) {
       chatInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter' && chatInput.value.trim() !== '') {
-          const message = document.createElement('div');
-          message.textContent = chatInput.value;
-          message.style.backgroundColor = '#00cfff';
-          message.style.color = 'white';
-          message.style.padding = '10px';
-          message.style.margin = '5px';
-          message.style.borderRadius = '10px';
-          message.style.maxWidth = '70%';
-          message.style.display = 'inline-block';
-          message.style.float = 'right';
-          message.style.clear = 'both';
-
-          chatArea.appendChild(message);
-          chatArea.scrollTop = chatArea.scrollHeight;
+          const userMessage = chatInput.value.trim();
+          appendMessage(userMessage, true); // User message
           chatInput.value = '';
+
+          // Send message to Flask backend
+          fetch('http://localhost:5000/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userMessage })
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Server error or Flask not running");
+            }
+            return response.json();
+          })
+          .then(data => {
+            appendMessage(data.response, false); // Bot response
+          })
+          .catch(error => {
+            console.error("Bot error:", error);
+            appendMessage("Bot error: " + error.message, false);
+          });
         }
       });
     }
